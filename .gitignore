@@ -1,0 +1,27 @@
+# Data folders (too large for GitHub - user must provide their own)
+DICOM/
+Converted_files/
+
+# Generated outputs
+output/
+
+# Python virtual environment
+dus/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Video files
+*.wmv
+*.mp4
+*.avi
+
+# OS files
+.DS_Store
+Thumbs.db
+
