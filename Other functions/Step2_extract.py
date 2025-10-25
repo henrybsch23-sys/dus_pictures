@@ -10,9 +10,9 @@ from PIL import Image, ImageOps
 
 def main():
     # === CONFIGURATION ===
-    in_path = Path("pic_1.jpg")      # input image filename
-    out_path = Path("pic_1_crop.png") # output file
-    ROI = {'x0': 105, 'y0': 656, 'x1': 1187, 'y1': 894}  # <— adjust here when needed
+    in_path = Path("pic_2.jpg")      # input image filename
+    out_path = Path("pic_2_crop.png") # output file
+    ROI = {'x0': 108, 'y0': 678, 'x1': 1187, 'y1': 891}  # <— adjust here when needed
     # ======================
 
     if not in_path.exists():

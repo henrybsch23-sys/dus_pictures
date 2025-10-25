@@ -18,7 +18,7 @@ from pathlib import Path
 from PIL import Image
 
 # === CONFIG ===
-IN_PATH = Path("pic_1_crop.png")            # your image
+IN_PATH = Path("pic_2_crop.png")            # your image
 OUT_YELLOW = Path("yellow_line.png")
 OUT_WHITE = Path("white_line.png")
 OUT_COMBINED = Path("combined_lines.png")
