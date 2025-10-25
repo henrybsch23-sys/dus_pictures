@@ -1,66 +1,120 @@
-# Doppler Ultrasound Time-Series Extraction
+# dus_pictures
 
-Extract velocity time-series from spectral Doppler ultrasound images.
+Este repositorio contiene un flujo de trabajo para analizar imágenes de **Doppler Ultrasound (DUS)**.  
+El proceso está dividido en dos archivos principales: `Step1_margin.py` y `Step2-5.ipynb`.  
+A partir de una imagen de ultrasonido en formato `.jpg`, el flujo permite seleccionar un área de interés (ROI), extraer las líneas relevantes (flujo sanguíneo), generar datos numéricos y graficarlos.
 
-## What it does
-- **Snapshot (DICOM still)**: Extract velocity envelope from a single spectral Doppler image
-- **Video (WMV/MP4/multi-frame DICOM)**: Extract velocity envelopes from scrolling spectrogram at time intervals
+---
 
-## Quick Start
+## 🧩 Archivos principales
 
-### 1. Setup Data Folders
-The data files are **not included** in this repository (too large for GitHub). You need to provide your own data:
+### 1️⃣ Step1_margin.py
+Este script se utiliza para **definir la región de interés (ROI)** dentro de una imagen de ultrasonido.
 
-- Create a `DICOM/` folder and place your DICOM files there
-  - Example structure: `DICOM/Artery/at_1_1`, `DICOM/Sup_arm_vein/A0000`, etc.
-- Create a `Converted_files/` folder for video files
-  - Example structure: `Converted_files/Vein/Vein_cont.wmv`, etc.
+#### Uso:
+1. Abre el archivo `Step1_margin.py`.
+2. En la **línea 22**, reemplaza la variable `img_path` con el nombre de la imagen que quieras usar, por ejemplo:
+   ```python
+   img_path = "pic_4.jpg"
+   ```
+3. Ejecuta el script dentro de tu entorno virtual o entorno local de Python.
+4. Se abrirá una ventana interactiva donde podrás **seleccionar con el ratón el área de interés** (idealmente la zona donde se observa el flujo sanguíneo).
+5. Al finalizar, en la terminal aparecerán las coordenadas del ROI, por ejemplo:
+   ```bash
+   ROI set: {'x0': 47, 'y0': 671, 'x1': 1187, 'y1': 889}
+   ```
+6. Copia estos valores, ya que los usarás en el siguiente paso.
 
-### 2. Run the Notebook
-1. Open `dicom_to_ts.ipynb`
-2. **IMPORTANT**: Restart the kernel (Kernel → Restart) to clear old code
-3. Run the **Setup** cell first (creates `output/` folder and helper functions)
-4. Edit file paths in the processing cells to match your data location
-5. Run the cells for snapshot or video processing
-6. Find results in `output/` folder
+---
 
-## Outputs
-All results saved to `output/`:
-- **CSV files**: `time_s, velocity_cm_s` columns
-- **PNG plots**: spectrograms + velocity curves
+### 2️⃣ Step2-5.ipynb
+Este cuaderno Jupyter ejecuta los pasos **2 a 5** del flujo de trabajo. Cada bloque corresponde a una etapa del procesamiento.
 
-## How it Works
-1. Crops the spectral Doppler panel from the ultrasound image
-2. Auto-detects the baseline (zero-velocity line)
-3. Auto-calibrates pixel-to-velocity scale from grid lines
-4. Extracts the bright envelope (max velocity at each time point)
-5. Smooths and exports as time-series
+#### Paso 2 – Extraer la imagen
+- Reemplaza la variable `ROOT_NAME` por el nombre del archivo (sin `.jpg`), por ejemplo:
+  ```python
+  ROOT_NAME = "pic_4"
+  ```
+- Reemplaza la variable `ROI` por las coordenadas que copiaste del paso anterior:
+  ```python
+  ROI = {'x0': 108, 'y0': 667, 'x1': 1186, 'y1': 894}
+  ```
+- Ejecuta la celda.  
+  El resultado será una imagen recortada con el nombre:
+  ```
+  pic_4_crop.png
+  ```
 
-## Configuration
-Adjust these in the processing cells if needed:
-- **Crop ratios**: `CROP_X1, CROP_X2, CROP_Y1, CROP_Y2` (default works for most machines)
-- **Time span**: `TIME_SPAN_S` (seconds shown in spectral box)
-- **Calibration**: `TICK_VALUE_CM_S` (velocity per grid tick, usually 10 or 20 cm/s)
-- **Video**: `WINDOW_INTERVAL_S` (extract envelope every N seconds)
+#### Paso 3 – Extraer las líneas
+- Ejecuta la celda “Extract lines”.  
+  Aquí se detectan las líneas de color **amarillo** y **blanco** del flujo.  
+  El resultado será:
+  ```
+  pic_4_lines.png
+  ```
 
-## Export to HTML
+#### Paso 4 – Convertir a CSV
+- Configura las variables:
+  ```python
+  DURATION_SEC = <duración_en_segundos>
+  V_PEAK = <velocidad_pico>
+  ```
+  Estas variables definen el periodo total de tiempo de la imagen y la velocidad máxima registrada.  
+- Ejecuta la celda para generar un archivo CSV con los valores numéricos extraídos:
+  ```
+  pic_4_lines.csv
+  ```
 
-### Simple method (recommended)
-Run the export script:
+#### Paso 5 – Graficar los puntos del CSV
+- Ejecuta la última celda.  
+  Se generará un gráfico de velocidad en función del tiempo, guardado como:
+  ```
+  pic_4_plot.png
+  ```
+
+---
+
+## 📂 Estructura de salida
+| Etapa | Descripción | Archivo de salida |
+|:------|:-------------|:------------------|
+| Paso 2 | Imagen recortada | `pic_4_crop.png` |
+| Paso 3 | Líneas extraídas | `pic_4_lines.png` |
+| Paso 4 | Datos CSV | `pic_4_lines.csv` |
+| Paso 5 | Gráfico final | `pic_4_plot.png` |
+
+Todos los archivos generados adoptan el nombre base del archivo configurado en `ROOT_NAME`.
+
+---
+
+## ⚙️ Requisitos
+- Python 3.x
+- Entorno virtual (recomendado)
+- Librerías necesarias (ver `requirements.txt`)
+
+### Instalación:
 ```bash
-.\dus\Scripts\python.exe export_html.py
+pip install -r requirements.txt
 ```
-This creates `output/dicom_to_ts.html` - open it in any web browser.
 
-### Alternative: From Jupyter Notebook
-In the notebook menu: **File → Download as → HTML (.html)**  
-(This may not work if nbconvert templates aren't installed - use the script above instead)
+---
 
-## Dependencies
-All required packages are in the `dus/` virtual environment:
-- `pydicom` - DICOM reading
-- `numpy` - array processing
-- `matplotlib` - plotting
-- `imageio` / `opencv-python` - video reading
+## 🚀 Ejemplo de uso completo
 
+1. Ejecutar `Step1_margin.py` con la imagen deseada (`pic_4.jpg`).
+2. Seleccionar la región de interés y copiar las coordenadas del ROI.
+3. Abrir `Step2-5.ipynb` en Jupyter Notebook.
+4. Configurar `ROOT_NAME` y `ROI` en el bloque del **Paso 2**.
+5. Ejecutar las celdas del paso 2 al 5 en orden.
+6. Verifica los archivos generados en la carpeta del proyecto.
 
+---
+
+## 🩺 Notas adicionales
+- El flujo está diseñado para imágenes Doppler Ultrasound (DUS) con visualización de flujo sanguíneo.
+- Cada paso es independiente y permite verificar visualmente el resultado intermedio.
+- Si cambias de imagen, asegúrate de repetir el **Step 1** y actualizar los valores de `ROOT_NAME` y `ROI` en el cuaderno.
+
+---
+
+**Autor:** Henry Serpa
+**Proyecto:** `dus_pictures` - Análisis de imágenes Doppler Ultrasound
