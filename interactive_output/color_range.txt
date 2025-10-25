@@ -1,0 +1,6 @@
+Lower HSV: [251 236 236]
+Upper HSV: [25  3 14]
+
+To use in code:
+lower_hsv = np.array([251, 236, 236])
+upper_hsv = np.array([25, 3, 14])

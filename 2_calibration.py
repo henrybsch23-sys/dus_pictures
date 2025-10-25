@@ -3,14 +3,14 @@ import pydicom, numpy as np, matplotlib.pyplot as plt, cv2
 from matplotlib.widgets import RectangleSelector
 
 # 2) load DICOM and convert to grayscale
-ds = pydicom.dcmread("./A0023")
+ds = pydicom.dcmread("./A0005")
 img = ds.pixel_array
 if img.ndim == 3:
     img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY).astype(np.float32)
 H, W = img.shape
 print(f"image size: {H} x {W}")
 
-roi_coords= {'x0': 107, 'y0': 704, 'x1': 1188, 'y1': 891}
+roi_coords= {'x0': 107, 'y0': 655, 'x1': 1187, 'y1': 895}
 
 y0, y1, x0, x1 = roi_coords['y0'], roi_coords['y1'], roi_coords['x0'], roi_coords['x1']
 
