@@ -20,6 +20,8 @@ __pycache__/
 *.wmv
 *.mp4
 *.avi
+*.jpg
+*.png
 
 # OS files
 .DS_Store

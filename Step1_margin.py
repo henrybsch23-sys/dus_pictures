@@ -19,7 +19,7 @@ def load_image_rgb(path):
     return rgb
 
 # 1) load IMAGE (COLOR preserved)
-img_path = "pic_4.jpg"  # <— your picture file
+img_path = "list_6/autotrace_001.jpg"  # <— your picture file
 img_rgb = load_image_rgb(img_path)
 H, W, _ = img_rgb.shape
 print(f"image size: {H} x {W}")
